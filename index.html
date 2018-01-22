@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Hisview</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css">
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+		</div>
+	</div>
+	<div class="container">
+	<div class="row">
+	<div class="col-md-6 col-lg-6"
+	<form role="form" enctype="multipart/form-data" method=post action="{% url 'Hisview:info' %}">
+	{% csrf_token %}
+		<div class="form-group">
+			<label id="genome">Background genome:</label>
+			<ul>
+				<li><span>hg19:&nbsp;&nbsp;<input type="radio" value="hg19" name="genome" /></span></li>
+				<li><span>hg38:&nbsp;&nbsp;<input type="radio" value="hg38" name="genome" /></span></li>
+				<li><span>mm9:&nbsp;&nbsp;<input type="radio" value="mm9" name="genome" /></span></li>
+				<li><span>mm10:&nbsp;&nbsp;<input type="radio" value="mm10" name="genome" /></span></li>
+			</ul>
+		</div>
+		<div class="form-group">
+			<label for="GSM">GSM code:</label>
+			<textarea class="form-control" name="GSM" id="GSM" rows="6" cols="20" placeholder="Type in GSM code here">Type in GSM code here.</textarea>
+		</div>
+		<br/>
+		<!-- Here's the block for input background bed file -->
+		<div class="form-group">
+			<label id="bgoption">Background regions</label>
+			<ul>
+				<li>
+					<label>
+						<input type="radio" id="bguploadbed" name="bgChoice" value="file" onclick="switchBg(this.value)" />
+						<span>BED file: &nbsp;&nbsp;<input type="file" id="bgfile" name="bgfile"></span>
+					</label>
+				</li>
+				<li>
+					<label>
+						<input type="radio" id="bgmanualgene" name="bgChoice" value="data" onclick="switchBg(this.value)" />
+						<span>Gene name: </span>
+						<textarea id="bgdata" name="bgdata" rows="5"></textarea>
+					</label>
+				</li>
+				<li>
+					<label>
+						<input type="radio" id="bgprebed" name="bgChoice" value="preset" onclick="switchBg(this.value)" />
+						<span>Fixed region:</span>
+					</label>
+						<ul id="bgpre">
+							<li>
+								<label for="cgi">CpG island:&nbsp;&nbsp;</label>
+								<input type="radio" id="cgi" name="bgpreset" value="cgi" />
+							</li>
+							<li>
+								<label for="prom">Promoter:&nbsp;&nbsp;</label>
+								<input type="radio" id="prom" name="bgpreset" value="prom" />
+							</li>
+						</ul>
+				</li>
+		</div>
+		<br/>
+		<div class="form-group">
+			<label id="bgmeth">Background methylation information:</label>
+			<ul>
+				<li><span>Human ESC:&nbsp;&nbsp;<input type="checkbox" id="meth1" name="meth1" /></span></li>
+				<li><span>Mouse ESC:&nbsp;&nbsp;<input type="checkbox" id="meth2" name="meth2" /></span></li>
+			</ul>
+		</div>
+		<div class="form-group">
+			<label id="bghmc">Background 5hmC information:</label>
+			<ul>
+				<li><span>Human ESC:&nbsp;&nbsp;<input type="checkbox" id="hmc1" name="hmc1" /></span></li>
+				<li><span>Mouse ESC:&nbsp;&nbsp;<input type="checkbox" id="hmc2" name="hmc2" /></span></li>
+			</ul>
+		</div>
+		<!-- Here's the plot setting-->
+		<br/>
+		<div class="form-group">
+			<p class="help-block">Plot setting:</p>
+			<label for="before">Upstream region length(bp):</label>
+		 	<input name="before" id="before" type="text" value="1000"/><br/>
+			<label for="after">Downstream region length(bp):</label>
+			<input name="after" id="after" type="text" value="1000"/><br/>
+			<label for="scale">Scale target region to(bp):</label>
+			<input name="scale" id="scale" type="text" value="1000"/><br/>
+			<label for="binsize">Bin size for plotting(factor of scaled length and upstream/downstream length):</label>
+			<input name="binsize" id="binsize" type="text" value="50"/><br/>
+			<!--<label for="bed">Upload bed file to fix target regions:</label>
+			<input type="file" name="bed" id="bed"><br/>-->
+			<input class="btn btn-default" type="submit" id="Process">
+		</div>
+	</form>
+	</div>
+	</div>
+	</div>
+
+
+<!-- form over  -->
+
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.bundle.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script>
+		function switchBg(checked){
+			if (checked === "file"){
+				document.getElementById("bgfile").disabled=false;
+				document.getElementById("bgdata").disabled=true;
+				$("input[name='bgpreset']").attr("disabled","disabled");
+			} else if (checked === "data"){
+				document.getElementById("bgdata").disabled=false;
+				$("input[name='bgpreset']").attr("disabled","disabled");
+				document.getElementById("bgfile").disabled=true;
+			} else if (checked === "preset"){
+				$("input[name='bgpreset']").attr("disabled",false);
+				document.getElementById("bgdata").disabled=true;
+				document.getElementById("bgfile").disabled=true;
+			}
+		}
+	</script>
+</body>
+</html>
