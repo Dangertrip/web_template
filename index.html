@@ -3,32 +3,63 @@
 <head>
 	<meta charset="utf-8">
 	<title>Hisview</title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css"/>
+	<link rel="stylesheet" href="./hisview.css"/>
 </head>
 <body>
-	<div class="container">
-		<div class="row">
-		</div>
+	<!--bar-->
+	<div class="col container">
+		<div class="float-left"><h2>HISVIEW</h2></div>
 	</div>
-	<div class="container">
+	<div class="col container">
+		<div class="float-right"><h3>Make public data viewable</h3></div> 
+	</div>
+	<!-- main content
+	<div id="sidebar_left" class="container">
+		<div class="row">
+			<div class="col-md-3 col-lg-3">
+
+			</div>
+		</div>
+	</div>-->
+	<div  class="container">
 	<div class="row">
-	<div class="col-md-6 col-lg-6"
-	<form role="form" enctype="multipart/form-data" method=post action="{% url 'Hisview:info' %}">
+	<div id="main" class="col-md-12 col-lg-12"
+	<p><h4>Hisview is a service for published genomic data. It contains methylome and histone modification information.</h4></p>
+	<form role="form" name="submit_form" enctype="multipart/form-data" method=post action="{% url 'Hisview:info' %}" onsubmit="return validate_form();">
 	{% csrf_token %}
 		<div class="form-group">
-			<label id="genome">Background genome:</label>
-			<ul>
+			<label id="genome">Background genome:</label><br/>
+			<span>hg19:&nbsp;&nbsp;<input type="radio" value="hg19" name="genome" id="genome_default" onclick="switchgenome(this.value)"/></span>&nbsp;&nbsp;&nbsp;&nbsp;
+		<!--	<span>hg38:&nbsp;&nbsp;<input type="radio" value="hg38" name="genome" onclick="switchgenome(this.value)"/></span>&nbsp;&nbsp;&nbsp;&nbsp;-->
+		<!--	<span>mm9:&nbsp;&nbsp;<input type="radio" value="mm9" name="genome" onclick="switchgenome(this.value)"/></span>&nbsp;&nbsp;&nbsp;&nbsp;-->
+			<span>mm10:&nbsp;&nbsp;<input type="radio" value="mm10" name="genome" onclick="switchgenome(this.value)"/></span>
+	<!--		<ul>
 				<li><span>hg19:&nbsp;&nbsp;<input type="radio" value="hg19" name="genome" /></span></li>
 				<li><span>hg38:&nbsp;&nbsp;<input type="radio" value="hg38" name="genome" /></span></li>
 				<li><span>mm9:&nbsp;&nbsp;<input type="radio" value="mm9" name="genome" /></span></li>
 				<li><span>mm10:&nbsp;&nbsp;<input type="radio" value="mm10" name="genome" /></span></li>
-			</ul>
+			</ul>-->
 		</div>
 		<div class="form-group">
-			<label for="GSM">GSM code:</label>
-			<textarea class="form-control" name="GSM" id="GSM" rows="6" cols="20" placeholder="Type in GSM code here">Type in GSM code here.</textarea>
+			<label>Histone information:</label>
+			<ul>
+				<li>
+					<label>
+						<input type="radio" id="bwgsm" name="bwChoice" value="bwgsm"  onclick="switchBw(this.value)" />
+						<label for="GSM">GSM code:</label>
+						<textarea class="form-control" name="GSM" id="GSM" rows="6" cols="20" placeholder="Type in GSM code here"></textarea>
+						<!-- Add examples here-->
+					</label>
+				</li>
+				<li>
+					<label>
+						<input type="radio" id="bwfileradio" name="bwChoice" value="bwfile" onclick="switchBw(this.value)" />
+						<span>BigWig file: &nbsp;&nbsp;<input type="file" id="bwfile" name="bwfile"></span>
+					</label>
+				</li>
+			</ul>
 		</div>
-		<br/>
 		<!-- Here's the block for input background bed file -->
 		<div class="form-group">
 			<label id="bgoption">Background regions</label>
@@ -48,22 +79,24 @@
 				</li>
 				<li>
 					<label>
-						<input type="radio" id="bgprebed" name="bgChoice" value="preset" onclick="switchBg(this.value)" />
+						<input type="radio" id="bgprebed" name="bgChoice"  value="preset" onclick="switchBg(this.value)" />
 						<span>Fixed region:</span>
 					</label>
-						<ul id="bgpre">
-							<li>
-								<label for="cgi">CpG island:&nbsp;&nbsp;</label>
-								<input type="radio" id="cgi" name="bgpreset" value="cgi" />
-							</li>
-							<li>
-								<label for="prom">Promoter:&nbsp;&nbsp;</label>
-								<input type="radio" id="prom" name="bgpreset" value="prom" />
-							</li>
-						</ul>
+					<br/>
+					<label for="cgi">CpG island:&nbsp;</label>
+					<input type="radio" id="cgi" name="bgpreset" value="cgi" />&nbsp;&nbsp;
+					<label for="prom">Promoter:&nbsp;</label>
+					<input type="radio" id="prom" name="bgpreset" value="prom" />&nbsp;&nbsp;
+					<label for="exon">Exon:&nbsp;</label>
+					<input type="radio" id="exon" name="bgpreset" value="exon" />&nbsp;&nbsp;
+					<label for="intron">Intron:&nbsp;</label>
+					<input type="radio" id="intron" name="bgpreset" value="intron"/>&nbsp;&nbsp;
+					<label for="3'UTR">3'UTR:&nbsp;</label>
+					<input type="radio" id="3utr" name="bgpreset" value="3utr"/>&nbsp;&nbsp;
+					<label for="5'UTR">5'UTR:&nbsp;</label>
+					<input type="radio" id="5utr" name="bgpreset" value="5utr"/>&nbsp;&nbsp;
 				</li>
 		</div>
-		<br/>
 		<div class="form-group">
 			<label id="bgmeth">Background methylation information:</label>
 			<ul>
@@ -79,7 +112,7 @@
 			</ul>
 		</div>
 		<!-- Here's the plot setting-->
-		<br/>
+		<hr></hr>
 		<div class="form-group">
 			<p class="help-block">Plot setting:</p>
 			<label for="before">Upstream region length(bp):</label>
@@ -121,6 +154,58 @@
 				document.getElementById("bgfile").disabled=true;
 			}
 		}
+		function switchBw(checked){
+			if (checked === "bwgsm"){
+				document.getElementById("bwfile").disabled=true;
+				document.getElementById("GSM").disabled=false;
+			} else {
+				document.getElementById("bwfile").disabled=false;
+				document.getElementById("GSM").disabled=true;
+			}
+		}
+		function switchgenome(checked){
+			if (checked === "hg19" || checked==="hg38"){
+				document.getElementById("meth2").disabled = true;
+				document.getElementById("hmc2").disabled = true;
+				document.getElementById("meth1").disabled = false;
+				document.getElementById("hmc1").disabled = false;
+			} else {
+				document.getElementById("meth1").disabled = true;
+				document.getElementById("hmc1").disabled = true;
+				document.getElementById("meth2").disabled = false;
+				document.getElementById("hmc2").disabled = false;
+			}
+		}
+
+		function check_ratio(id){
+			return document.getElementById(id).checked;	
+		}
+		function validate_required(value,alerttxt){
+			
+				if (value==null||value==""){
+					alert(alerttxt);return false;
+				} else {return true}
+			
+		}
+
+
+		function validate_form(){
+
+			if (check_ratio("bwgsm")){
+				if (validate_required(document.forms["submit_form"]["GSM"].value,"Please input GSM code!")==false){ return false;}}
+			if (check_ratio("bgmanualgene")){
+				if (validate_required(document.forms["submit_form"]["bgdata"].value,"Please input gene list!")==false){ return false;}}
+			return true;
+		}
+
+		$(document).ready(function(){
+		
+		document.getElementById("genome_default").click();
+		document.getElementById("bwgsm").click();
+		document.getElementById("bgprebed").click();
+		document.getElementById("cgi").click();
+			
+		})
 	</script>
 </body>
 </html>
